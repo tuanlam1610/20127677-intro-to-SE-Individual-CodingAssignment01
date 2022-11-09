@@ -75,4 +75,16 @@ app.put('/api/changeStudentName/:id', (req, res) =>{
    res.send(students);
 })
 
+app.delete('/api/deleteStudent/:id', (req, res) => {
+   const student = students.find(a => a.id === req.params.id);
+   if (!student) {
+      res.status(404).send('That student does not exist.');
+      return;
+   }
+
+   const pos = students.indexOf(student);
+   students.splice(pos,1);
+   res.send(students);
+})
+
 app.listen(3000, () => console.log("Listening on port 3000..."));
