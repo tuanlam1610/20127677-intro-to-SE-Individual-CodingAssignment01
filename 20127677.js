@@ -1,7 +1,9 @@
+const Joi = require('joi');
 const express = require('express');
+const { join } = require('path');
 const app = express();
 
-app.use(express.json())
+app.use(express.json());
 
 const students =[
    {
@@ -33,13 +35,23 @@ app.get('/api/showStudent/:id',(req, res) => {
 });
 
 app.post('/api/addStudent', (req, res) =>{
+   const schema = Joi.object({
+      id: Joi.string().regex(/^\d+$/).min(8).max(8).required(),
+      name: Joi.string().min(3).required()
+   });
+   const result = schema.validate(req.body);
+   
+   if (result.error){
+      res.status(400).send(result.error.details[0].message);
+      return;
+   }
+
    const newStudent ={
       id: req.body.id,
       name: req.body.name
    };
 
    students.push(newStudent);
-   res.send('Add successfully!');
    res.send(students);
 })
 
