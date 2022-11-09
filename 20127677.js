@@ -55,4 +55,24 @@ app.post('/api/addStudent', (req, res) =>{
    res.send(students);
 })
 
+app.put('/api/changeStudentName/:id', (req, res) =>{
+   const student = students.find(a => a.id === req.params.id);
+   if (!student) {
+      res.status(404).send('That student does not exist.');
+      return;
+   }
+
+   const schema = Joi.object({
+      name: Joi.string().min(3).required()
+   });
+   const result = schema.validate(req.body);
+
+   if (result.error){
+      res.status(400).send(result.error.details[0].message);
+      return;
+   }
+   student.name = req.body.name;
+   res.send(students);
+})
+
 app.listen(3000, () => console.log("Listening on port 3000..."));
